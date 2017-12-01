@@ -1,0 +1,21 @@
+.navbar {
+    background-color: #f0f0f0;
+    padding-left: 60px;
+    border-bottom: #28a745 2px solid;
+}
+.container{
+    margin-top: 60px; 
+}
+
+.list-item{
+    text-align: center;
+    padding: 20px;
+    /* border: black 2px solid;  */
+}
+.item-image{
+    width: 160px;
+    height: 160px;
+}
+.price{
+    font-size: 1.8em;
+}
