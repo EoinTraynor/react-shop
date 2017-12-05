@@ -1,41 +1,34 @@
 import React from 'react'
-// load data
-const StoredItems = require('./store_items.json');
+import ItemList from './Items'
+import Cart from './Cart'
+const StoreItems = require('../assets/store_items.json');
 
-const Item = (props) => {
-  return (
-    <div className='list-item'> 
-        <div>
-            <img src={props.imgSrc} alt={props.itemName} className="img-responsive" width="160px" height="160px"/>
-        </div>        
-        <p>{props.itemName}</p>
-        <p><span className="price">${props.price}</span> {props.quantityRemaining} In Stock</p>
-        <button type="button" className="btn btn-success">Add to Cart</button>
-    </div>
-  )
-}
+// TO DO
+// width
+// Position
+// Name length
+// missing image
 
-const ItemList = (props) => {            
-    let itemList = Object.keys(props).map(index => {        
-        return <div key={ index } className="col"> <Item {...props[index]}/> </div>;
-    });
-    return <div className="col-9 items-group"><div className="row"> {itemList} </div></div>
-}
-
-const SideBar = () => {
-    return(
-        <div className="col-3">
-            SideBar
-        </div>
-    )
-}
+// basket
 
 export default class App extends React.Component {
+    constructor(){
+        super();
+        this.state = {
+            storeItems: StoreItems,
+            cart: {},
+        };
+    }
+
+    changeStore(){
+        this.setState({storeItems: this.cart})
+    }
+
 	render() {
         return(
             <div className="row">                
-                <ItemList {...StoredItems}/>                                                
-                {/* <SideBar />                                 */}
+                <ItemList items={this.state.storeItems} changeStore={this.changeStore.bind(this)}/>
+                <Cart items={this.state.cart}/>                                
             </div>
         );
     }
