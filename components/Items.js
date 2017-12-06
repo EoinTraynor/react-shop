@@ -29,18 +29,13 @@ class Item extends React.Component {
 }
 
 export default class ItemList extends React.Component {
-    handelClick(e){
-        this.props.changeStore();
-    }
-
     render(){
-        let itemList = Object.keys(this.props.items).map(index => {        
+        let itemList = Object.keys(this.props.items).map((key, index) => {                    
             return <div key={ index } className="col"> <Item item={this.props.items[index]}/> </div>;
         });
         return( 
             <div className="col-9 items-group">
-                <div className="row"> {itemList} </div>            
-                <button onClick={this.handelClick.bind(this)} type="button" className="btn btn-success">Change State</button>
+                <div className="row"> {itemList} </div>                            
             </div>
         )
     }                   
