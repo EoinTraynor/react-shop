@@ -1,7 +1,9 @@
 import React from 'react'
+import { connect } from 'react-redux'
+
 import ItemList from './Items'
 import Cart from './Cart'
-const StoreItems = require('../assets/store_items.json');
+const StoreItems = require('../data/store_items.json');
 
 
 // TO DO
@@ -11,9 +13,9 @@ const StoreItems = require('../assets/store_items.json');
 // missing image
 
 // add key index to each store item 
-Object.keys(StoreItems).map(index => {        
-    index: StoreItems[index];    
-});
+// Object.keys(StoreItems).map(index => {        
+//     index: StoreItems[index];    
+// });
 
 export default class App extends React.Component {    
     constructor(){
@@ -35,7 +37,8 @@ export default class App extends React.Component {
         this.setState({storeItems: this.cart})
     }
 
-	render() {        
+	render() {   
+        console.log("foo", this.props);     
         return(
             <div className="row">                
                 <ItemList items={this.state.storeItems} changeStore={this.changeStore.bind(this)}/>
