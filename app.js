@@ -6,14 +6,10 @@ import { addToBasket } from './actions/'
 import App from './components/App'
 import store from './store.js'
 
-
-// store.subscribe(() => {
-//     console.log("store changed", store.getState());
-// });
-
-// store.dispatch({type: "ADD_TO_BASKET", objectKey:0});
-// store.dispatch({type: "ADD_TO_BASKET", objectKey:1});
-// store.dispatch({type: "ADD_TO_BASKET", objectKey:2});
+// listen to store changes: for testing
+store.subscribe(() => {
+    console.log("store changed", store.getState());
+});
 
 ReactDOM.render(
     <Provider store={store}>
