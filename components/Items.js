@@ -1,4 +1,6 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { addToBasket } from '../actions/'
 
 class Item extends React.Component {
     constructor(props){
@@ -28,10 +30,13 @@ class Item extends React.Component {
     }
 }
 
-export default class ItemList extends React.Component {
+class ItemList extends React.Component {
     render(){
-        let itemList = Object.keys(this.props.items).map((key, index) => {                    
-            return <div key={ index } className="col"> <Item item={this.props.items[index]}/> </div>;
+        console.log(this.props);
+        const { storeItems, addToBasket } = this.props;
+        this.props.addToBasket(1);
+        let itemList = Object.keys(storeItems).map((key, index) => {                    
+            return <div key={ index } className="col"> <Item item={storeItems[index]}/> </div>;
         });
         return( 
             <div className="col-9 items-group">
@@ -40,3 +45,18 @@ export default class ItemList extends React.Component {
         )
     }                   
 }
+
+const mapStateToProps = state => {
+    return {
+        storeItems: state.storeItems
+    }
+}
+const mapDispatchToProps = dispatch => {
+    return {
+        addToBasket: id => {
+        dispatch(addToBasket(id))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ItemList)

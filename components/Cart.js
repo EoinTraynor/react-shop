@@ -1,6 +1,29 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { addToBasket } from '../actions/'
 
-export default class Cart extends React.Component {
+class CartItem extends React.Component {
+    render(){                   
+        return (
+            <div className='cart-item row'>     
+                <img src={this.props.item.imgSrc} alt={this.props.item.itemName} className="img-responsive" width="75px" height="75px"/>        
+                <div style={{display: 'inline-block', marginLeft: 10}}>
+                    <div style={{fontSize:'1.25em', fontWeight: 'bold'}}>{this.props.item.itemName}</div>
+                    <p>Unit ${this.props.item.price}</p>              
+                    <p>Toatal ${this.props.item.price * this.props.item.quantity}</p>              
+                </div>
+                <div>                    
+                    <a href="#">+</a>
+                    <span>{this.props.item.quantity}</span>
+                    <a href="#">-</a>
+                    <a href="#">Remove Item</a>
+                </div>
+            </div>
+        );
+    }
+}
+
+class Cart extends React.Component {
     constructor(){
         super();
         this.state = {            
@@ -23,6 +46,7 @@ export default class Cart extends React.Component {
     }
 
     render(){
+        const { cart } = this.state;
         const cartItems = this.state.cartItems;
         const numItems = Object.keys(cartItems).length;
         const cartTotal = Object.keys(cartItems).reduce((total, key) => {
@@ -47,23 +71,17 @@ export default class Cart extends React.Component {
     }
 }
 
-class CartItem extends React.Component {
-    render(){                   
-        return (
-            <div className='cart-item row'>     
-                <img src={this.props.item.imgSrc} alt={this.props.item.itemName} className="img-responsive" width="75px" height="75px"/>        
-                <div style={{display: 'inline-block', marginLeft: 10}}>
-                    <div style={{fontSize:'1.25em', fontWeight: 'bold'}}>{this.props.item.itemName}</div>
-                    <p>Unit ${this.props.item.price}</p>              
-                    <p>Toatal ${this.props.item.price * this.props.item.quantity}</p>              
-                </div>
-                <div>                    
-                    <a href="#">+</a>
-                    <span>{this.props.item.quantity}</span>
-                    <a href="#">-</a>
-                    <a href="#">Remove Item</a>
-                </div>
-            </div>
-        );
+const mapStateToProps = state => {
+    return {
+        cart: state.cart
     }
 }
+const mapDispatchToProps = dispatch => {
+    return {
+        addToBasket: id => {
+        dispatch(addToBasket(id))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Cart)

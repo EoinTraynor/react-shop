@@ -13,7 +13,7 @@ const StoreItems = require('../data/store_items.json');
 
 const defaults = {
     storeItems: StoreItems,
-    basket: []
+    cart: {}
 }
 const reducer = (state=defaults, action) => {   
     if (action.type === 'ADD_TO_BASKET') {            

@@ -7,22 +7,6 @@ import App from './components/App'
 import store from './store.js'
 
 
-const mapStateToProps = state => {
-    return {
-        state: state
-    }
-}
-const mapDispatchToProps = dispatch => {
-    return {
-        addToBasket: id => {
-        dispatch(addToBasket(id))
-        }
-    }
-}
-
-const ReduxApp = connect(mapStateToProps, mapDispatchToProps)(App)
-
-
 // store.subscribe(() => {
 //     console.log("store changed", store.getState());
 // });
@@ -33,7 +17,7 @@ const ReduxApp = connect(mapStateToProps, mapDispatchToProps)(App)
 
 ReactDOM.render(
     <Provider store={store}>
-        <ReduxApp />
+        <App />
     </Provider>,
     document.getElementById('app')
 )

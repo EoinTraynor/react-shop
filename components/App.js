@@ -1,19 +1,13 @@
 import React from 'react'
-
 import ItemList from './Items'
 import Cart from './Cart'
 
-export default class App extends React.Component {    
-    changeStore(){
-        this.setState({storeItems: this.cart})
-    }
-
-	render() {         
-        const { storeItems, cart} = this.props.state;
+export default class App extends React.Component {        
+	render() {                 
         return(
             <div className="row">                
-                <ItemList items={storeItems} changeStore={this.changeStore.bind(this)}/>
-                <Cart items={cart}/>                                
+                <ItemList />
+                <Cart />                                
             </div>
         );
     }
