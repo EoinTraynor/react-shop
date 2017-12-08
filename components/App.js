@@ -1,10 +1,23 @@
 import React from 'react'
-import { connect } from 'react-redux'
 
 import ItemList from './Items'
 import Cart from './Cart'
-const StoreItems = require('../data/store_items.json');
 
+export default class App extends React.Component {    
+    changeStore(){
+        this.setState({storeItems: this.cart})
+    }
+
+	render() {         
+        const { storeItems, cart} = this.props.state;
+        return(
+            <div className="row">                
+                <ItemList items={storeItems} changeStore={this.changeStore.bind(this)}/>
+                <Cart items={cart}/>                                
+            </div>
+        );
+    }
+}
 
 // TO DO
 // width
@@ -17,33 +30,9 @@ const StoreItems = require('../data/store_items.json');
 //     index: StoreItems[index];    
 // });
 
-export default class App extends React.Component {    
-    constructor(){
-        super();
-        this.state = {
-            storeItems: StoreItems,
-            cart: {},
-        };
-    }
-
     // Functions
     // Add item to basket
     // Increment - Decrement basket item
     // Remove Item from basket
     // Clear Basket
     // Make purchase
-
-    changeStore(){
-        this.setState({storeItems: this.cart})
-    }
-
-	render() {   
-        console.log("foo", this.props);     
-        return(
-            <div className="row">                
-                <ItemList items={this.state.storeItems} changeStore={this.changeStore.bind(this)}/>
-                <Cart items={this.state.cart}/>                                
-            </div>
-        );
-    }
-}

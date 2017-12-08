@@ -4,3 +4,9 @@ export function addToBasket(item) {
         objectKey: item
     }
 }
+
+export function fetchItems() {
+    return{
+        
+    }
+}
