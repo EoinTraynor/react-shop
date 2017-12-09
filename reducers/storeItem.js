@@ -1,14 +1,3 @@
-// import { combineReducers } from 'redux'
-// import storeItem from './storeItem'
-
-// const tweetsReducer = (state={}, actions) => {
-//     return state;
-// }
-// export default combineReducers({
-//     storeItem: storeItem,
-//     tweets: tweetsReducer
-// })
-
 const StoreItems = require('../data/store_items.json');
 // add key index to each store item 
 Object.keys(StoreItems).map(index => {        
@@ -61,7 +50,6 @@ const reducer = (state=defaults, action) => {
         }
         
         // increase quantity
-        console.log("increasing quantity");
         state = {
             ...state,
             cart: {
