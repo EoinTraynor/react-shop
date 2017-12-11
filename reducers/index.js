@@ -16,7 +16,7 @@ Object.keys(StoreItems).map(index => {
 });
 const defaults = {
     storeItems: StoreItems,
-    cart: []
+    cart: {}
 }
 const reducer = (state=defaults, action) => {           
     if (action.type === 'ADD_TO_BASKET') {
@@ -38,41 +38,54 @@ const reducer = (state=defaults, action) => {
                 
             }
         }
-        // does object exist in cart
-        function containsObject(obj, list) {            
+
+        // does object exist in cart helper
+        function containsObject(obj, list) {                        
+            console.log(list);
             for (let i = 0; i < list.length; i++) {
-                if (list[i].itemName === obj.itemName) {
+                // console.log("list " + list[i].itemName + "obj " + obj.itemName);
+                if (list[i].itemName === obj.itemName) {                    
                     return i;
                 }
             }        
             return false;
         }
 
+        // remove object from array helper
+        function updateItem(array, index, item) {
+            return [
+                ...array.slice(index, 1, item)                                
+            ];
+        }
+
         // check if items is already in the basket
-        const objectIndex = containsObject(item, state.cart)
+        const objectIndex = containsObject(item, state.cart);
         // add item        
+        let cartItem = item;
+        delete cartItem.quantityRemaining;
+        cartItem.quantity = 1;        
         if (objectIndex === false) {
             state = {...state,
                 cart: [
-                    ...state.cart, item
+                    ...state.cart, 
+                    cartItem
                 ]
             }
             return state;
         }
         
+        // create new item
+        let updatedItem = state.cart[objectIndex];
+        updatedItem.quantity++;
+
+        // update origional item from array
+        let modifiedCart = updateItem(state.cart, objectIndex, updatedItem);                                
+
         // increase quantity
-        console.log("increasing quantity");
         state = {
             ...state,
-            cart: {
-                ...state.cart,                                    
-                [objectIndex]: {
-                    ...state.cart[objectIndex],
-                    quantityRemaining: state.cart[objectIndex].quantityRemaining+1
-                }  
-            }
-        }
-        
+            cart: modifiedCart
+        }      
     }
     return state;    
 }
