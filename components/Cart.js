@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { removeFromBasket, reduceItemInCart } from '../actions/'
+import { removeFromCart, reduceItemInCart, clearCart, purchaseCart } from '../actions/'
 
 class CartItem extends React.Component {
     handleRemoveItemClick(item, itemIndex){    
-        const { removeFromBasket } = this.props;        
-        removeFromBasket(item, itemIndex);
+        const { removeFromCart } = this.props;        
+        removeFromCart(item, itemIndex);
     }
     handleReduceItemClick(item ,itemIndex){            
         const { reduceItemInCart } = this.props;        
@@ -34,8 +34,13 @@ class CartItem extends React.Component {
 }
 
 class Cart extends React.Component {
+    handlePurchaseCartClick(){
+        const { purchaseCart } = this.props;
+        purchaseCart();
+    }
+
     render(){        
-        const { cart, removeFromBasket, reduceItemInCart } = this.props;
+        const { cart, removeFromCart, reduceItemInCart } = this.props;
         // calculate num of items & cart total        
         const numItems = Object.keys(cart).length;
         const cartTotal = Object.keys(cart).reduce((total, key) => {
@@ -43,7 +48,7 @@ class Cart extends React.Component {
         }, 0);
         let itemList = Object.keys(cart).map(index => {        
             return <div key={ index } className="col"> 
-                <CartItem itemIndex={index} item={cart[index]} removeFromBasket={removeFromBasket} reduceItemInCart={reduceItemInCart} />
+                <CartItem itemIndex={index} item={cart[index]} removeFromCart={removeFromCart} reduceItemInCart={reduceItemInCart} />
             </div>;
         });
         
@@ -54,7 +59,7 @@ class Cart extends React.Component {
                 {itemList}
                 <p>Total: $<span>{cartTotal}</span></p>
                 <a>Empty Cart</a>
-                <button>Confirm Purchase</button>
+                <button onClick={this.handlePurchaseCartClick.bind(this)}>Confirm Purchase</button>
             </div>
         )
     }
@@ -67,11 +72,17 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = dispatch => {
     return {
-        removeFromBasket: (item, itemIndex) => {
-        dispatch(removeFromBasket(item, itemIndex))
+        removeFromCart: (item, itemIndex) => {
+        dispatch(removeFromCart(item, itemIndex))
         },
         reduceItemInCart: (item, itemIndex) => {
             dispatch(reduceItemInCart(item, itemIndex))
+        },
+        clearCart: (item, itemIndex) => {
+            dispatch(clearCart(item, itemIndex))
+        },
+        purchaseCart: () => {
+            dispatch(purchaseCart())
         }
     }
 }

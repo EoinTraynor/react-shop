@@ -1,23 +1,20 @@
-import { combineReducers } from 'redux'
-// import storeItem from './storeItem'
-
-const tweetsReducer = (state={}, actions) => {
-    return state;
-}
-
-// export default combineReducers({
-//     store: storeReducer,
-//     tweets: tweetsReducer
-// })
-
 const StoreItems = require('../data/store_items.json');
-// add key index to each store item 
-// Object.keys(StoreItems).map(index => {        
-//     index: StoreItems[index];    
-// });
 const defaults = {
     storeItems: StoreItems,
     cart: []
+}
+
+// HELPERS
+// does item exist in cart
+function containsObject(obj, list) {
+    console.log(list);
+    for (let i = 0; i < list.length; i++) {
+        // console.log("list " + list[i].itemName + "obj " + obj.itemName);
+        if (list[i].itemName === obj.itemName) {
+            return i;
+        }
+    }
+    return false;
 }
 
 function removeItem(array, index) {
@@ -27,7 +24,7 @@ function removeItem(array, index) {
     ];
 }
 
-function updateObjectInArray(array, itemIndex) {
+function updateObjectInArray(array, itemIndex, instruction) {
     return array.map( (item, index) => {
         if(index !== itemIndex) {
             // This isn't the item we care about - keep it as-is
@@ -35,7 +32,15 @@ function updateObjectInArray(array, itemIndex) {
         }
         
         // Otherwise, this is the one we want - return an updated value
-        return {
+        // increment cart item quantity 
+        if (instruction === 'INC') {
+            return {
+                ...item,
+                quantity: item.quantity+1
+            };    
+        }
+        // decrement cart item quantity 
+        return { 
             ...item,
             quantity: item.quantity-1
         };    
@@ -53,9 +58,48 @@ function findItemInStore(objList, itemName) {
     return itemIndex;
 }
 
+// add item to cart this can occure on 'add to cart' or increase quantity
+function addToCart(storeItemIndex, state) {    
+    const item = state.storeItems[storeItemIndex];
+
+    // ensure quantity is not 0
+    if (!item.quantityRemaining) {
+        return state;
+    }
+    // decrement quantityRemaining
+    state = {
+        ...state,
+        storeItems: {
+            ...state.storeItems,
+            [storeItemIndex]: {
+                ...state.storeItems[storeItemIndex],
+                quantityRemaining: item.quantityRemaining - 1
+            }
+
+        }
+    }        
+
+    // check if items is already in the Cart
+    const objectIndex = containsObject(item, state.cart);
+    // it doesn't => add item                                
+    if (objectIndex === false) {
+        // modify the item 'quantity'
+        let cartItem = item;
+        delete cartItem.quantityRemaining;
+        cartItem.quantity = 1;
+        state = {
+            ...state,
+            cart: [
+                ...state.cart,
+                cartItem
+            ]
+        }
+        return state;
+}
+
 const storeReducer = (state=defaults, action) => {         
     switch (action.type) {
-        case 'ADD_TO_BASKET': {
+        case 'ADD_TO_CART': {
             const itemIndex = action.itemIndex;
             const item = state.storeItems[itemIndex];
 
@@ -74,34 +118,16 @@ const storeReducer = (state=defaults, action) => {
                     }
 
                 }
-            }
+            }        
 
-            // does object exist in cart helper
-            function containsObject(obj, list) {
-                console.log(list);
-                for (let i = 0; i < list.length; i++) {
-                    // console.log("list " + list[i].itemName + "obj " + obj.itemName);
-                    if (list[i].itemName === obj.itemName) {
-                        return i;
-                    }
-                }
-                return false;
-            }
-
-            // remove object from array helper
-            function updateItem(array, index, item) {
-                return [
-                    ...array.slice(index, 1, item)
-                ];
-            }
-
-            // check if items is already in the basket
+            // check if items is already in the Cart
             const objectIndex = containsObject(item, state.cart);
-            // add item        
-            let cartItem = item;
-            delete cartItem.quantityRemaining;
-            cartItem.quantity = 1;
+            // it doesn't => add item                                
             if (objectIndex === false) {
+                // modify the item 'quantity'
+                let cartItem = item;
+                delete cartItem.quantityRemaining;
+                cartItem.quantity = 1;
                 state = {
                     ...state,
                     cart: [
@@ -110,24 +136,19 @@ const storeReducer = (state=defaults, action) => {
                     ]
                 }
                 return state;
-            }
-
-            // create new item
-            let updatedItem = state.cart[objectIndex];
-            updatedItem.quantity++;
-
-            // update origional item from array
-            let modifiedCart = updateItem(state.cart, objectIndex, updatedItem);
+            }            
 
             // increase quantity
+            const updatedCart = updateObjectInArray(state.cart, objectIndex, 'INC');
+            
             state = {
                 ...state,
-                cart: modifiedCart
+                cart: updatedCart
             }
             return state;
             break;
         }
-        case 'REMOVE_ITEM_FROM_BASKET': {
+        case 'REMOVE_ITEM_FROM_CART': {
             const cartItemQuantity = action.item.quantity;
             const cartItemName = action.item.itemName;
             
@@ -171,7 +192,7 @@ const storeReducer = (state=defaults, action) => {
             }
             
             // decrement cart quantity
-            const updatedCart = updateObjectInArray(state.cart, action.itemIndex);            
+            const updatedCart = updateObjectInArray(state.cart, action.itemIndex, 'DEC');            
             
             state = {
                 ...state,
@@ -186,6 +207,18 @@ const storeReducer = (state=defaults, action) => {
                     cart: itemRemoved
                 }
             }
+
+            return state;
+        }
+        case 'PURCHASE_CART': {
+            // empty cart
+            state = {
+                ...state,
+                cart: []
+            }
+            return state;
+        }
+        case 'CLEAR_CART': {
 
             return state;
         }

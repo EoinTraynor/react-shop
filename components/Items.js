@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { addToBasket } from '../actions/'
+import { addToCart } from '../actions/'
 
 class Item extends React.Component {    
     handleItemClick(itemIndex){
-        const { addToBasket } = this.props;        
-        addToBasket(itemIndex);
+        const { addToCart } = this.props;        
+        addToCart(itemIndex);
     }
     
     render(){           
@@ -26,11 +26,11 @@ class Item extends React.Component {
 class ItemList extends React.Component {
     render(){
         console.log(this.props);
-        const { storeItems, addToBasket } = this.props;
-        // this.props.addToBasket(1);
+        const { storeItems, addToCart } = this.props;
+        // this.props.addToCart(1);
         let itemList = Object.keys(storeItems).map((key, index) => {                    
             return <div key={ index } className="col"> 
-                <Item index={ index } item={storeItems[index]} addToBasket={addToBasket} /> 
+                <Item index={ index } item={storeItems[index]} addToCart={addToCart} /> 
             </div>;
         });
         return( 
@@ -48,8 +48,8 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = dispatch => {
     return {
-        addToBasket: id => {
-        dispatch(addToBasket(id))
+        addToCart: id => {
+        dispatch(addToCart(id))
         }
     }
 }
