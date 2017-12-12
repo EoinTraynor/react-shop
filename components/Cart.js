@@ -1,11 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { removeFromBasket } from '../actions/'
+import { removeFromBasket, reduceItemInCart } from '../actions/'
 
 class CartItem extends React.Component {
     handleRemoveItemClick(item, itemIndex){    
         const { removeFromBasket } = this.props;        
         removeFromBasket(item, itemIndex);
+    }
+    handleReduceItemClick(item ,itemIndex){            
+        const { reduceItemInCart } = this.props;        
+        reduceItemInCart(item, itemIndex);
     }
 
     render(){                
@@ -21,7 +25,7 @@ class CartItem extends React.Component {
                 <div>                    
                     <a href="#">+</a>
                     <span>{item.quantity}</span>
-                    <a href="#">-</a>
+                    <a href="#" onClick={this.handleReduceItemClick.bind(this, item, itemIndex)}>-</a>
                     <a href="#" onClick={this.handleRemoveItemClick.bind(this, item, itemIndex)}>Remove Item</a>
                 </div>
             </div>
@@ -31,7 +35,7 @@ class CartItem extends React.Component {
 
 class Cart extends React.Component {
     render(){        
-        const { cart, removeFromBasket } = this.props;
+        const { cart, removeFromBasket, reduceItemInCart } = this.props;
         // calculate num of items & cart total        
         const numItems = Object.keys(cart).length;
         const cartTotal = Object.keys(cart).reduce((total, key) => {
@@ -39,7 +43,7 @@ class Cart extends React.Component {
         }, 0);
         let itemList = Object.keys(cart).map(index => {        
             return <div key={ index } className="col"> 
-                <CartItem itemIndex={index} item={cart[index]} removeFromBasket={removeFromBasket} />
+                <CartItem itemIndex={index} item={cart[index]} removeFromBasket={removeFromBasket} reduceItemInCart={reduceItemInCart} />
             </div>;
         });
         
@@ -65,6 +69,9 @@ const mapDispatchToProps = dispatch => {
     return {
         removeFromBasket: (item, itemIndex) => {
         dispatch(removeFromBasket(item, itemIndex))
+        },
+        reduceItemInCart: (item, itemIndex) => {
+            dispatch(reduceItemInCart(item, itemIndex))
         }
     }
 }

@@ -27,9 +27,35 @@ function removeItem(array, index) {
     ];
 }
 
-const storeReducer = (state=defaults, action) => {
+function updateObjectInArray(array, itemIndex) {
+    return array.map( (item, index) => {
+        if(index !== itemIndex) {
+            // This isn't the item we care about - keep it as-is
+            return item;
+        }
+        
+        // Otherwise, this is the one we want - return an updated value
+        return {
+            ...item,
+            quantity: item.quantity-1
+        };    
+    });
+}
+
+function findItemInStore(objList, itemName) {
+    let itemIndex;
+    Object.keys(objList).find((key) => {
+        // match store item
+        if (objList[key].itemName === itemName) {                    
+            itemIndex = key;
+        }                
+    }); 
+    return itemIndex;
+}
+
+const storeReducer = (state=defaults, action) => {         
     switch (action.type) {
-        case 'ADD_TO_BASKET':
+        case 'ADD_TO_BASKET': {
             const itemIndex = action.itemIndex;
             const item = state.storeItems[itemIndex];
 
@@ -100,18 +126,13 @@ const storeReducer = (state=defaults, action) => {
             }
             return state;
             break;
-        case 'REMOVE_ITEM_FROM_BASKET':
+        }
+        case 'REMOVE_ITEM_FROM_BASKET': {
             const cartItemQuantity = action.item.quantity;
             const cartItemName = action.item.itemName;
             
             // find item in store            
-            const storeItemIndex = Object.keys(state.storeItems).find((key) => {
-                // match store item
-                if (state.storeItems[key].itemName === cartItemName) {                    
-                    return key;
-                }
-                return;                                    
-            });                        
+            const storeItemIndex = findItemInStore(state.storeItems, cartItemName);                        
             
             // replenish store quantity
             state = {
@@ -134,12 +155,44 @@ const storeReducer = (state=defaults, action) => {
 
             return state;
             break;
-        case 'REDUCE_ITEM_IN_BASKET':
+        }
+        case 'REDUCE_ITEM_IN_CART': {
+            // replenish store quantity
+            const storeItemIndex = findItemInStore(state.storeItems, action.item.itemName);         
+            state = {
+                ...state,
+                storeItems: {
+                    ...state.storeItems,
+                    [storeItemIndex]: {
+                        ...state.storeItems[storeItemIndex],
+                        quantityRemaining: state.storeItems[storeItemIndex].quantityRemaining + 1
+                    }
+                }
+            }
             
-        return state;
-        default:
+            // decrement cart quantity
+            const updatedCart = updateObjectInArray(state.cart, action.itemIndex);            
+            
+            state = {
+                ...state,
+                cart: updatedCart                
+            }
+
+            // if cart item quantity is 0 remove from cart
+            if(state.cart[action.itemIndex].quantity === 0){                
+                const itemRemoved = removeItem(state.cart, action.itemIndex);
+                state = {
+                    ...state,
+                    cart: itemRemoved
+                }
+            }
+
+            return state;
+        }
+        default: {
             return state;
             break;
+        }
     }               
 }
 

@@ -13,10 +13,11 @@ export function removeFromBasket(item, itemIndex) {
     }
 }
 
-export function reduceItemInBakset(item) {
+export function reduceItemInCart(item, itemIndex) {    
     return {
-        type: "REDUCE_ITEM_IN_BASKET", 
-        itemIndex: item
+        type: "REDUCE_ITEM_IN_CART", 
+        item,
+        itemIndex: Number(itemIndex)
     }
 }
 
