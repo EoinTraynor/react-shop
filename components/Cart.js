@@ -1,22 +1,28 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { addToBasket } from '../actions/'
+import { removeFromBasket } from '../actions/'
 
 class CartItem extends React.Component {
-    render(){                   
+    handleRemoveItemClick(item, itemIndex){    
+        const { removeFromBasket } = this.props;        
+        removeFromBasket(item, itemIndex);
+    }
+
+    render(){                
+        const { itemIndex, item} = this.props;
         return (
             <div className='cart-item row'>     
-                <img src={this.props.item.imgSrc} alt={this.props.item.itemName} className="img-responsive" width="75px" height="75px"/>        
+                <img src={item.imgSrc} alt={item.itemName} className="img-responsive" width="75px" height="75px"/>        
                 <div style={{display: 'inline-block', marginLeft: 10}}>
-                    <div style={{fontSize:'1.25em', fontWeight: 'bold'}}>{this.props.item.itemName}</div>
-                    <p>Unit ${this.props.item.price}</p>              
-                    <p>Toatal ${this.props.item.price * this.props.item.quantity}</p>              
+                    <div style={{fontSize:'1.25em', fontWeight: 'bold'}}>{item.itemName}</div>
+                    <p>Unit ${item.price}</p>              
+                    <p>Toatal ${item.price * item.quantity}</p>              
                 </div>
                 <div>                    
                     <a href="#">+</a>
-                    <span>{this.props.item.quantity}</span>
+                    <span>{item.quantity}</span>
                     <a href="#">-</a>
-                    <a href="#">Remove Item</a>
+                    <a href="#" onClick={this.handleRemoveItemClick.bind(this, item, itemIndex)}>Remove Item</a>
                 </div>
             </div>
         );
@@ -24,37 +30,16 @@ class CartItem extends React.Component {
 }
 
 class Cart extends React.Component {
-    constructor(){
-        super();
-        this.state = {            
-            total: 0,
-            cartItems: [
-                {
-                    "itemName": "banana",
-                    "imgSrc": "https://tinyurl.com/zcdrymz",
-                    "price": 1.25,
-                    "quantity": 10
-                },
-                {
-                    "itemName": "apple",
-                    "imgSrc": "https://tinyurl.com/lg5rj5z",
-                    "price": 2.50,
-                    "quantity": 5
-                }
-            ]
-        }
-    }
-
-    render(){
-        const { cart } = this.state;
-        const cartItems = this.state.cartItems;
-        const numItems = Object.keys(cartItems).length;
-        const cartTotal = Object.keys(cartItems).reduce((total, key) => {
-            return total + (cartItems[key].price * cartItems[key].quantity);
+    render(){        
+        const { cart, removeFromBasket } = this.props;
+        // calculate num of items & cart total        
+        const numItems = Object.keys(cart).length;
+        const cartTotal = Object.keys(cart).reduce((total, key) => {
+            return total + (cart[key].price * cart[key].quantity);
         }, 0);
-        let itemList = Object.keys(cartItems).map(index => {        
+        let itemList = Object.keys(cart).map(index => {        
             return <div key={ index } className="col"> 
-                <CartItem item={cartItems[index]} />
+                <CartItem itemIndex={index} item={cart[index]} removeFromBasket={removeFromBasket} />
             </div>;
         });
         
@@ -78,8 +63,8 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = dispatch => {
     return {
-        addToBasket: id => {
-        dispatch(addToBasket(id))
+        removeFromBasket: (item, itemIndex) => {
+        dispatch(removeFromBasket(item, itemIndex))
         }
     }
 }
