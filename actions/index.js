@@ -21,6 +21,14 @@ export function reduceItemInCart(item, itemIndex) {
     }
 }
 
+export function increaseItemInCart(item, itemIndex) {    
+    return {
+        type: "INCREASE_ITEM_IN_CART",     
+        item,
+        itemIndex: Number(itemIndex)
+    }
+}
+
 export function clearCart(item) {
     return {
         type: "CLEAR_CART", 

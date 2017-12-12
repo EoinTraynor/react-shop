@@ -25,6 +25,7 @@ function removeItem(array, index) {
 }
 
 function updateObjectInArray(array, itemIndex, instruction) {
+    console.log(array, itemIndex, instruction);
     return array.map( (item, index) => {
         if(index !== itemIndex) {
             // This isn't the item we care about - keep it as-is
@@ -60,48 +61,14 @@ function findItemInStore(objList, itemName) {
 
 // add item to cart this can occure on 'add to cart' or increase quantity
 function addToCart(storeItemIndex, state) {    
-    const item = state.storeItems[storeItemIndex];
-
-    // ensure quantity is not 0
-    if (!item.quantityRemaining) {
-        return state;
-    }
-    // decrement quantityRemaining
-    state = {
-        ...state,
-        storeItems: {
-            ...state.storeItems,
-            [storeItemIndex]: {
-                ...state.storeItems[storeItemIndex],
-                quantityRemaining: item.quantityRemaining - 1
-            }
-
-        }
-    }        
-
-    // check if items is already in the Cart
-    const objectIndex = containsObject(item, state.cart);
-    // it doesn't => add item                                
-    if (objectIndex === false) {
-        // modify the item 'quantity'
-        let cartItem = item;
-        delete cartItem.quantityRemaining;
-        cartItem.quantity = 1;
-        state = {
-            ...state,
-            cart: [
-                ...state.cart,
-                cartItem
-            ]
-        }
-        return state;
+    
 }
 
 const storeReducer = (state=defaults, action) => {         
     switch (action.type) {
-        case 'ADD_TO_CART': {
-            const itemIndex = action.itemIndex;
-            const item = state.storeItems[itemIndex];
+        case 'ADD_TO_CART': {            
+            const storeItemIndex = action.itemIndex;
+            const item = state.storeItems[storeItemIndex];
 
             // ensure quantity is not 0
             if (!item.quantityRemaining) {
@@ -112,8 +79,8 @@ const storeReducer = (state=defaults, action) => {
                 ...state,
                 storeItems: {
                     ...state.storeItems,
-                    [action.itemIndex]: {
-                        ...state.storeItems[action.itemIndex],
+                    [storeItemIndex]: {
+                        ...state.storeItems[storeItemIndex],
                         quantityRemaining: item.quantityRemaining - 1
                     }
 
@@ -197,7 +164,7 @@ const storeReducer = (state=defaults, action) => {
             state = {
                 ...state,
                 cart: updatedCart                
-            }
+            }            
 
             // if cart item quantity is 0 remove from cart
             if(state.cart[action.itemIndex].quantity === 0){                
@@ -209,6 +176,38 @@ const storeReducer = (state=defaults, action) => {
             }
 
             return state;
+        }
+        case 'INCREASE_ITEM_IN_CART': {                        
+            const storeItemIndex = findItemInStore(state.storeItems, action.item.itemName); 
+            const item = state.storeItems[storeItemIndex];
+            
+            // ensure quantity is not 0
+            if (!item.quantityRemaining) {
+                return state;
+            }
+            // decrement quantityRemaining
+            state = {
+                ...state,
+                storeItems: {
+                    ...state.storeItems,
+                    [storeItemIndex]: {
+                        ...state.storeItems[storeItemIndex],
+                        quantityRemaining: item.quantityRemaining - 1
+                    }
+
+                }
+            }
+
+            // increase cart item quantity
+            const updatedCart = updateObjectInArray(state.cart, action.itemIndex, 'INC');
+            console.log(updatedCart);
+            state = {
+                ...state,
+                cart: updatedCart                
+            }
+
+            return state;
+            
         }
         case 'PURCHASE_CART': {
             // empty cart
