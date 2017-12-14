@@ -59,11 +59,6 @@ function findItemInStore(objList, itemName) {
     return itemIndex;
 }
 
-// add item to cart this can occure on 'add to cart' or increase quantity
-function addToCart(storeItemIndex, state) {    
-    
-}
-
 const storeReducer = (state=defaults, action) => {         
     switch (action.type) {
         case 'ADD_TO_CART': {            
@@ -218,6 +213,29 @@ const storeReducer = (state=defaults, action) => {
             return state;
         }
         case 'CLEAR_CART': {
+            // foreach item in cart
+            // find item in store            
+            Object.keys(state.cart).map(index => {        
+                const storeItemIndex = findItemInStore(state.storeItems, state.cart[index].itemName);                                
+                const cartItemQuantity = state.cart[index].quantity;
+                // // replenish store quantity
+                state = {
+                    ...state,
+                    storeItems: {
+                        ...state.storeItems,
+                        [storeItemIndex]: {
+                            ...state.storeItems[storeItemIndex],
+                            quantityRemaining: state.storeItems[storeItemIndex].quantityRemaining + cartItemQuantity
+                        }
+                    }
+                }                
+            });            
+            
+            // empty cart 
+            state = {
+                ...state,
+                cart: []                
+            }
 
             return state;
         }

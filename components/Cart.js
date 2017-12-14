@@ -42,6 +42,10 @@ class Cart extends React.Component {
         const { purchaseCart } = this.props;
         purchaseCart();
     }
+    handleClearCartClick(){
+        const { clearCart } = this.props;
+        clearCart();
+    }
 
     render(){        
         const { cart, removeFromCart, reduceItemInCart, increaseItemInCart } = this.props;
@@ -62,7 +66,7 @@ class Cart extends React.Component {
                 <p>{numItems} items</p>
                 {itemList}
                 <p>Total: $<span>{cartTotal}</span></p>
-                <a>Empty Cart</a>
+                <a href="#" onClick={this.handleClearCartClick.bind(this)}>Empty Cart</a>
                 <button onClick={this.handlePurchaseCartClick.bind(this)}>Confirm Purchase</button>
             </div>
         )
@@ -85,8 +89,8 @@ const mapDispatchToProps = dispatch => {
         increaseItemInCart: (item, itemIndex) => {
             dispatch(increaseItemInCart(item, itemIndex))
         },
-        clearCart: (item, itemIndex) => {
-            dispatch(clearCart(item, itemIndex))
+        clearCart: () => {
+            dispatch(clearCart())
         },
         purchaseCart: () => {
             dispatch(purchaseCart())
