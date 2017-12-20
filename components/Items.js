@@ -13,23 +13,21 @@ class Item extends React.Component {
         return (
           <div className='list-item'> 
               <div>
-                  <img src={item.imgSrc} alt={item.itemName} className="img-responsive" width="160px" height="160px"/>
+                  <img src={item.imgSrc} onError={(e)=>{e.target.src='http://via.placeholder.com/160x160'}} alt={item.itemName} className="img-responsive" width="160px" height="160px"/>
               </div>        
-              <p>{item.itemName}</p>
+              <p className="item-name text-capitalize">{item.itemName}</p>
               <p><span className="price">${item.price}</span> {item.quantityRemaining} In Stock</p>
-              <button onClick={this.handleItemClick.bind(this, index)} type="button" className="btn btn-success">Add to Cart</button>
+              <button onClick={this.handleItemClick.bind(this, index)} type="button" className="btn btn-success" disabled={!item.quantityRemaining>0}>Add to Cart</button>
           </div>
         );
     }
 }
 
 class ItemList extends React.Component {
-    render(){
-        console.log(this.props);
-        const { storeItems, addToCart } = this.props;
-        // this.props.addToCart(1);
+    render(){        
+        const { storeItems, addToCart } = this.props;    
         let itemList = Object.keys(storeItems).map((key, index) => {                    
-            return <div key={ index } className="col"> 
+            return <div key={ index } className="col-4"> 
                 <Item index={ index } item={storeItems[index]} addToCart={addToCart} /> 
             </div>;
         });

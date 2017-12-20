@@ -6,10 +6,8 @@ const defaults = {
 
 // HELPERS
 // does item exist in cart
-function containsObject(obj, list) {
-    console.log(list);
-    for (let i = 0; i < list.length; i++) {
-        // console.log("list " + list[i].itemName + "obj " + obj.itemName);
+function containsObject(obj, list) {    
+    for (let i = 0; i < list.length; i++) {        
         if (list[i].itemName === obj.itemName) {
             return i;
         }
@@ -24,8 +22,7 @@ function removeItem(array, index) {
     ];
 }
 
-function updateObjectInArray(array, itemIndex, instruction) {
-    console.log(array, itemIndex, instruction);
+function updateObjectInArray(array, itemIndex, instruction) {    
     return array.map( (item, index) => {
         if(index !== itemIndex) {
             // This isn't the item we care about - keep it as-is
@@ -194,8 +191,7 @@ const storeReducer = (state=defaults, action) => {
             }
 
             // increase cart item quantity
-            const updatedCart = updateObjectInArray(state.cart, action.itemIndex, 'INC');
-            console.log(updatedCart);
+            const updatedCart = updateObjectInArray(state.cart, action.itemIndex, 'INC');            
             state = {
                 ...state,
                 cart: updatedCart                

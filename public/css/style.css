@@ -26,3 +26,14 @@
 .cart-item{
     padding-bottom: 25px;
 }
+
+.item-name{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+.item-name:hover {
+    text-overflow: inherit;
+    overflow: visible;
+}

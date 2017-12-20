@@ -2,41 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { removeFromCart, reduceItemInCart, increaseItemInCart, clearCart, purchaseCart } from '../actions/'
 
-class CartItem extends React.Component {
-    handleRemoveItemClick(item, itemIndex){    
-        const { removeFromCart } = this.props;        
-        removeFromCart(item, itemIndex);
-    }
-    handleReduceItemClick(item ,itemIndex){            
-        const { reduceItemInCart } = this.props;        
-        reduceItemInCart(item, itemIndex);
-    }
-    handleIncreaseItemClick(item ,itemIndex){            
-        const { increaseItemInCart } = this.props;        
-        increaseItemInCart(item, itemIndex);
-    }
-
-    render(){                
-        const { itemIndex, item} = this.props;
-        return (
-            <div className='cart-item row'>     
-                <img src={item.imgSrc} alt={item.itemName} className="img-responsive" width="75px" height="75px"/>        
-                <div style={{display: 'inline-block', marginLeft: 10}}>
-                    <div style={{fontSize:'1.25em', fontWeight: 'bold'}}>{item.itemName}</div>
-                    <p>Unit ${item.price}</p>              
-                    <p>Toatal ${item.price * item.quantity}</p>              
-                </div>
-                <div>                    
-                    <a href="#" onClick={this.handleIncreaseItemClick.bind(this, item, itemIndex)}>+</a>
-                    <span>{item.quantity}</span>
-                    <a href="#" onClick={this.handleReduceItemClick.bind(this, item, itemIndex)}>-</a>
-                    <a href="#" onClick={this.handleRemoveItemClick.bind(this, item, itemIndex)}>Remove Item</a>
-                </div>
-            </div>
-        );
-    }
-}
-
 class Cart extends React.Component {
     handlePurchaseCartClick(){
         const { purchaseCart } = this.props;
@@ -72,6 +37,42 @@ class Cart extends React.Component {
         )
     }
 }
+
+class CartItem extends React.Component {
+    handleRemoveItemClick(item, itemIndex){    
+        const { removeFromCart } = this.props;        
+        removeFromCart(item, itemIndex);
+    }
+    handleReduceItemClick(item ,itemIndex){            
+        const { reduceItemInCart } = this.props;        
+        reduceItemInCart(item, itemIndex);
+    }
+    handleIncreaseItemClick(item ,itemIndex){            
+        const { increaseItemInCart } = this.props;        
+        increaseItemInCart(item, itemIndex);
+    }
+
+    render(){                
+        const { itemIndex, item} = this.props;
+        return (
+            <div className='cart-item row'>     
+                <img src={item.imgSrc} onError={(e)=>{e.target.src='http://via.placeholder.com/75x75'}} alt={item.itemName} className="img-responsive" width="75px" height="75px"/>        
+                <div style={{display: 'inline-block', maxWidth:100, marginLeft: 10}}>
+                    <div className="item-name text-capitalize" style={{fontSize:'1.25em', fontWeight: 'bold'}}>{item.itemName}</div>
+                    <p>Unit ${item.price}</p>              
+                    <p>Toatal ${item.price * item.quantity}</p>              
+                </div>
+                <div>                    
+                    <a href="#" onClick={this.handleIncreaseItemClick.bind(this, item, itemIndex)}>+</a>
+                    <span>{item.quantity}</span>
+                    <a href="#" onClick={this.handleReduceItemClick.bind(this, item, itemIndex)}>-</a>
+                    <a href="#" onClick={this.handleRemoveItemClick.bind(this, item, itemIndex)}>Remove Item</a>
+                </div>
+            </div>
+        );
+    }
+}
+
 
 const mapStateToProps = state => {
     return {
