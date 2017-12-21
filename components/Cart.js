@@ -17,7 +17,8 @@ class Cart extends React.Component {
         // calculate num of items & cart total        
         const numItems = Object.keys(cart).length;
         const cartTotal = Object.keys(cart).reduce((total, key) => {
-            return total + (cart[key].price * cart[key].quantity);
+            const itemTotal = Math.round((cart[key].price * cart[key].quantity) *100)/100;
+            return Math.round((total + itemTotal)*100)/100;            
         }, 0);
         let itemList = Object.keys(cart).map(index => {        
             return <div key={ index } className="col"> 
@@ -28,11 +29,13 @@ class Cart extends React.Component {
         return(
             <div id="shoping-cart" className="col-3">
                 <h2>Shoping Cart</h2>
-                <p>{numItems} items</p>
-                {itemList}
-                <p>Total: $<span>{cartTotal}</span></p>
-                <a href="#" onClick={this.handleClearCartClick.bind(this)}>Empty Cart</a>
-                <button onClick={this.handlePurchaseCartClick.bind(this)}>Confirm Purchase</button>
+                <p>{numItems} Items</p>
+                <div id="cart-item-list">
+                    {itemList}
+                </div>
+                <p id="total-price">Cart Total: $<span>{cartTotal.toFixed(2)}</span></p>
+                <a id="empty-cart" href="#" onClick={this.handleClearCartClick.bind(this)}>Empty Cart</a>                
+                <button type="button" className="btn btn-primary" onClick={this.handlePurchaseCartClick.bind(this)}>Confirm Purchase</button>
             </div>
         )
     }
@@ -57,16 +60,18 @@ class CartItem extends React.Component {
         return (
             <div className='cart-item row'>     
                 <img src={item.imgSrc} onError={(e)=>{e.target.src='http://via.placeholder.com/75x75'}} alt={item.itemName} className="img-responsive" width="75px" height="75px"/>        
-                <div style={{display: 'inline-block', maxWidth:100, marginLeft: 10}}>
-                    <div className="item-name text-capitalize" style={{fontSize:'1.25em', fontWeight: 'bold'}}>{item.itemName}</div>
-                    <p>Unit ${item.price}</p>              
-                    <p>Toatal ${item.price * item.quantity}</p>              
+                <div style={{display: 'inline-block', paddingLeft:10, textAlign:"initial", width:"170px"}}>
+                    <div className="item-name text-capitalize">{item.itemName}</div>
+                    <span style={{float:"left", paddingTop:"3px"}}>Unit ${item.price}</span>                                  
+                    <div style={{float:"right"}}>
+                        <i className="fa fa-minus" aria-hidden="true" onClick={this.handleReduceItemClick.bind(this, item, itemIndex)}></i>
+                        <span style={{fontSize:"1.2em"}}>{item.quantity}</span>                    
+                        <i className="fa fa-plus" aria-hidden="true" onClick={this.handleIncreaseItemClick.bind(this, item, itemIndex)}></i>
+                    </div>
                 </div>
-                <div>                    
-                    <a href="#" onClick={this.handleIncreaseItemClick.bind(this, item, itemIndex)}>+</a>
-                    <span>{item.quantity}</span>
-                    <a href="#" onClick={this.handleReduceItemClick.bind(this, item, itemIndex)}>-</a>
-                    <a href="#" onClick={this.handleRemoveItemClick.bind(this, item, itemIndex)}>Remove Item</a>
+                <div style={{width:"100%"}}>                                        
+                    <a href="#" onClick={this.handleRemoveItemClick.bind(this, item, itemIndex)} style={{float:"left"}}>Remove Item</a>
+                    <span style={{float:"right"}}>Item Total ${(item.price * item.quantity).toFixed(2)}</span>              
                 </div>
             </div>
         );

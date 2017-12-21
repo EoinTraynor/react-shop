@@ -20,20 +20,40 @@
     font-size: 1.8em;
 }
 #shoping-cart{
+    border-radius: 10px;
+    padding: 20px;
     text-align: center;
-    background-color: #89d29a;
+    background-color: #e9ecef;
+}
+#total-price{
+    font-size: 1.2em;
+}
+#empty-cart{
+    display: inline-block;
+    padding-bottom: 15px;
 }
 .cart-item{
     padding-bottom: 25px;
 }
 
 .item-name{
+    font-size: 1.25em;
+    font-weight: bold;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100%;
 }
 .item-name:hover {
-    text-overflow: inherit;
-    overflow: visible;
+    /* overflow div */
+    /* text-overflow: inherit;
+    overflow: visible; */
+
+    /* extend div height */
+    white-space: normal;
+}
+.fa-plus, .fa-minus{    
+    color: #007bff;
+    cursor: pointer;
+    padding:0 8px;
 }
